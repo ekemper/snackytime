@@ -14,29 +14,22 @@ declare var google;
 export class FoodPlaceService {
 	map:any;
 	//infowindow:any = new google.maps.InfoWindow();
-
+	initializationFinished: boolean = false;
   	myLat: number;
   	myLng: number;
 
-	// baseUrl: string = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?';
-
-	//bad doodoo, put this in an environment var or something...
-	// apiKey: string = 'AIzaSyDaZjfloS9vK6T4SCM_YVOBwWIDAPbrs9c';
     googlePlacesService:any;
 
   	constructor() {
-
 	    google.maps.event.addDomListener(window, "load", this.init.bind(this));
   	}
 
 	initializeMap() {
-	    var latlng = new google.maps.LatLng(this.myLat, this.myLng);
 	    var myOptions = {
-	        zoom: 8,
-	        center: latlng,
-	        mapTypeId: google.maps.MapTypeId.ROADMAP
+	        zoom: 14,
+	        center: {lat: this.myLat, lng: this.myLng},
 	    };
-	    this.map = new google.maps.Map(document.getElementById("map"), myOptions);
+	    this.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 	}
 
 	getFoodPlaces(){
@@ -47,7 +40,7 @@ export class FoodPlaceService {
 			  //   this.createMarker(results[i]);
 			  // }
 
-			  console.log('places results : ' + results);
+			  //console.log('places results : ' + JSON.stringify(results,null,4));
 
 			}else{
 				console.warn("places service call not ok");
@@ -57,7 +50,7 @@ export class FoodPlaceService {
         this.googlePlacesService.nearbySearch({
           location: {lat: this.myLat, lng: this.myLng},
           radius: 500,
-          type: ['store']
+          type: ['food']
         }, nearbySearchCallback);
 	}
 
@@ -84,19 +77,16 @@ export class FoodPlaceService {
 		navigator.geolocation.getCurrentPosition(successCallback.bind(this), errorCallback, options);
 	}
 
-
 	init(){
 
         this.getCurrentGeolocation(()=>{
 
-	  	  console.log('this.myLat : ' + this.myLat);
-
 	  	  this.initializeMap();
 		  this.googlePlacesService = new google.maps.places.PlacesService(this.map);
 
-
-
 		  this.getFoodPlaces();
+
+		  this.initializationFinished = true;
 	    });
 	}
 }
