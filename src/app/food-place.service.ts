@@ -3,18 +3,27 @@ import { Injectable } from '@angular/core';
 import { FoodPlace } from './food-place';
 import { Observable } from 'rxjs/Rx';
 
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
-
-
 // Import RxJs required methods
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
+declare var google;
+
+
 @Injectable()
 export class FoodPlaceService {
+	//map:any;
+	//infowindow:any = new google.maps.InfoWindow();
 
-  	// constructor(private http: Http) {}
-  	constructor(){}
+    //googlePlacesService:any = new google.maps.places.PlacesService(this.map);
+
+  	constructor() {
+
+  		// this.map = new google.maps.Map(document.getElementById('map'), {
+    //       center: {lat: -33.867, lng: 151.195},
+    //       zoom: 15
+    //     });
+  	}
 
   	myLat: number;
   	myLng: number;
@@ -45,49 +54,52 @@ export class FoodPlaceService {
 
 	}
 
-	// getFoodPlaces() : Observable<FoodPlace[]> {
-	// 	return this.http.get(this.formFoodPlacesUrl())
-	// 		.map((res:Response) => res.json())
-	// 		.catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+	// getFoodPlaces(){
+
+ //        this.googlePlacesService.nearbySearch({
+ //          location: {lat: this.myLat, lng: this.myLng},
+ //          radius: 500,
+ //          type: ['store']
+ //        }, this.nearbySearchCallback);
 	// }
 
-
-
-
-
-
-
-	// // infowindow = new google.maps.InfoWindow();
- //    var service = new google.maps.places.PlacesService(map);
- //    service.nearbySearch({
- //      location: pyrmont,
- //      radius: 500,
- //      type: ['store']
- //    }, callback);
-
-
-	// function callback(results, status) {
+	// nearbySearchCallback(results, status) {
 	// 	if (status === google.maps.places.PlacesServiceStatus.OK) {
-	// 	  for (var i = 0; i < results.length; i++) {
-	// 	    createMarker(results[i]);
-	// 	  }
+	// 	  // for (var i = 0; i < results.length; i++) {
+	// 	  //   this.createMarker(results[i]);
+	// 	  // }
+
+	// 	  console.log('places results : ' + results);
+
+	// 	}else{
+	// 		console.warn("places service call not ok");
 	// 	}
 	// }
 
-	// function createMarker(place) {
-	// 	var placeLoc = place.geometry.location;
-	// 	var marker = new google.maps.Marker({
-	// 	  map: map,
-	// 	  position: place.geometry.location
-	// });
+	getCurrentGeolocation(callback){
+		var options = {
+		  enableHighAccuracy: true,
+		  timeout: 15000,
+		  maximumAge: 10000
+		};
 
-	// google.maps.event.addListener(marker, 'click', function() {
-	//   infowindow.setContent(place.name);
-	//   infowindow.open(map, this);
-	// });
-	
+		function successCallback(pos) {
+		  var crd = pos.coords;
 
+		  this.myLat = crd.latitude;
+		  this.myLng = crd.longitude;
 
+		  console.log('foodPlaceService.myLat: ' + this.myLat);
 
+		  //this.initMap();
 
+		  callback();
+		};
+
+		function errorCallback(err) {
+		  console.warn(`ERROR(${err.code}): ${err.message}`);
+		};
+
+		navigator.geolocation.getCurrentPosition(successCallback.bind(this), errorCallback, options);
+	}
 }
