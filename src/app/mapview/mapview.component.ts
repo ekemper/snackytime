@@ -14,8 +14,6 @@ export class MapviewComponent implements OnInit {
 	constructor(private foodPlaceService: FoodPlaceService) { } 
 
 	ngOnInit(){
-	  this.foodPlaceService.getCurrentGeolocation(()=>{
-		  //this.foodPlaceService.getFoodPlaces();
-	  });
+	  
 	}
 }

@@ -12,69 +12,54 @@ declare var google;
 
 @Injectable()
 export class FoodPlaceService {
-	//map:any;
+	map:any;
 	//infowindow:any = new google.maps.InfoWindow();
-
-    //googlePlacesService:any = new google.maps.places.PlacesService(this.map);
-
-  	constructor() {
-
-  		// this.map = new google.maps.Map(document.getElementById('map'), {
-    //       center: {lat: -33.867, lng: 151.195},
-    //       zoom: 15
-    //     });
-  	}
 
   	myLat: number;
   	myLng: number;
 
-	baseUrl: string = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?';
+	// baseUrl: string = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?';
 
 	//bad doodoo, put this in an environment var or something...
-	apiKey: string = 'AIzaSyDaZjfloS9vK6T4SCM_YVOBwWIDAPbrs9c';
+	// apiKey: string = 'AIzaSyDaZjfloS9vK6T4SCM_YVOBwWIDAPbrs9c';
+    googlePlacesService:any;
 
+  	constructor() {
 
-// location: string = 
-// location=-33.8670522,151.1957362&radius=500&type=restaurant&keyword=cruise&key=YOUR_API_KEY
+	    google.maps.event.addDomListener(window, "load", this.init.bind(this));
+  	}
 
-	formFoodPlacesUrl(){
-
-
-		let locationParam = '&location=' + this.myLat + ',' + this.myLng;
-
-		let otherParams = '&radius=500&type=restaurant&keyword=cruise';
-
-		let apiKeyParam = '&key=' + this.apiKey;
-
-		let url = this.baseUrl + locationParam + otherParams + apiKeyParam;
-
-		console.log('formed url : ' + url);
-
-		return url;
-
+	initializeMap() {
+	    var latlng = new google.maps.LatLng(this.myLat, this.myLng);
+	    var myOptions = {
+	        zoom: 8,
+	        center: latlng,
+	        mapTypeId: google.maps.MapTypeId.ROADMAP
+	    };
+	    this.map = new google.maps.Map(document.getElementById("map"), myOptions);
 	}
 
-	// getFoodPlaces(){
+	getFoodPlaces(){
 
- //        this.googlePlacesService.nearbySearch({
- //          location: {lat: this.myLat, lng: this.myLng},
- //          radius: 500,
- //          type: ['store']
- //        }, this.nearbySearchCallback);
-	// }
+	    function nearbySearchCallback(results, status) {
+			if (status === google.maps.places.PlacesServiceStatus.OK) {
+			  // for (var i = 0; i < results.length; i++) {
+			  //   this.createMarker(results[i]);
+			  // }
 
-	// nearbySearchCallback(results, status) {
-	// 	if (status === google.maps.places.PlacesServiceStatus.OK) {
-	// 	  // for (var i = 0; i < results.length; i++) {
-	// 	  //   this.createMarker(results[i]);
-	// 	  // }
+			  console.log('places results : ' + results);
 
-	// 	  console.log('places results : ' + results);
+			}else{
+				console.warn("places service call not ok");
+			}
+		}
 
-	// 	}else{
-	// 		console.warn("places service call not ok");
-	// 	}
-	// }
+        this.googlePlacesService.nearbySearch({
+          location: {lat: this.myLat, lng: this.myLng},
+          radius: 500,
+          type: ['store']
+        }, nearbySearchCallback);
+	}
 
 	getCurrentGeolocation(callback){
 		var options = {
@@ -89,10 +74,6 @@ export class FoodPlaceService {
 		  this.myLat = crd.latitude;
 		  this.myLng = crd.longitude;
 
-		  console.log('foodPlaceService.myLat: ' + this.myLat);
-
-		  //this.initMap();
-
 		  callback();
 		};
 
@@ -101,5 +82,21 @@ export class FoodPlaceService {
 		};
 
 		navigator.geolocation.getCurrentPosition(successCallback.bind(this), errorCallback, options);
+	}
+
+
+	init(){
+
+        this.getCurrentGeolocation(()=>{
+
+	  	  console.log('this.myLat : ' + this.myLat);
+
+	  	  this.initializeMap();
+		  this.googlePlacesService = new google.maps.places.PlacesService(this.map);
+
+
+
+		  this.getFoodPlaces();
+	    });
 	}
 }
