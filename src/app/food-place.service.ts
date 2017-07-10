@@ -26,32 +26,44 @@ export class FoodPlaceService {
 
 	initializeMap() {
 	    var myOptions = {
-	        zoom: 14,
+	        zoom: 16,
 	        center: {lat: this.myLat, lng: this.myLng},
 	    };
 	    this.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 	}
 
+	createMarker(place:any){
+
+		let markerLat = place.geometry.location.lat();
+		let markerLng = place.geometry.location.lng();
+
+		var marker = new google.maps.Marker({
+	        position: { lat: markerLat, lng: markerLng },
+	        map: this.map
+	      });
+	}
+
 	getFoodPlaces(){
 
-	    function nearbySearchCallback(results, status) {
-			if (status === google.maps.places.PlacesServiceStatus.OK) {
-			  // for (var i = 0; i < results.length; i++) {
-			  //   this.createMarker(results[i]);
-			  // }
+        this.googlePlacesService.nearbySearch({
+          location: {lat: this.myLat, lng: this.myLng},
+          radius: 500,
+          type: ['food']
+
+        }, (results, status)=>{
+
+        	if (status === google.maps.places.PlacesServiceStatus.OK) {
+			  for (var i = 0; i < results.length; i++) {
+			    this.createMarker(results[i]);
+			  }
 
 			  //console.log('places results : ' + JSON.stringify(results,null,4));
 
 			}else{
 				console.warn("places service call not ok");
 			}
-		}
 
-        this.googlePlacesService.nearbySearch({
-          location: {lat: this.myLat, lng: this.myLng},
-          radius: 500,
-          type: ['food']
-        }, nearbySearchCallback);
+        });
 	}
 
 	getCurrentGeolocation(callback){
@@ -78,15 +90,11 @@ export class FoodPlaceService {
 	}
 
 	init(){
-
         this.getCurrentGeolocation(()=>{
-
-	  	  this.initializeMap();
-		  this.googlePlacesService = new google.maps.places.PlacesService(this.map);
-
-		  this.getFoodPlaces();
-
-		  this.initializationFinished = true;
+			this.initializeMap();
+			this.googlePlacesService = new google.maps.places.PlacesService(this.map);
+			this.getFoodPlaces();
+			this.initializationFinished = true;
 	    });
 	}
 }

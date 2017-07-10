@@ -1,0 +1,10 @@
+#loading-map-alert {
+	text-align: center;
+}
+
+@media screen and (min-width: 480px) {
+    .responsive-container {
+        max-width: 80vw;
+        margin-left:10vw;
+    }
+}

@@ -2,6 +2,10 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { FoodPlaceService } from './food-place.service';
 
+declare var google;
+
+
+
 describe('FoodPlaceService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({

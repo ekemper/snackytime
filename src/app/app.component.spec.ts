@@ -1,6 +1,8 @@
+import { NO_ERRORS_SCHEMA }          from '@angular/core';
 import { TestBed, async } from '@angular/core/testing';
-
+import { MapviewComponent } from './mapview/mapview.component';
 import { AppComponent } from './app.component';
+
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -8,6 +10,7 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
+      schemas:[ NO_ERRORS_SCHEMA ]
     }).compileComponents();
   }));
 
@@ -23,10 +26,10 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('app');
   }));
 
-  it('should render title in a h1 tag', async(() => {
+  it('should render title in a h3 tag', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to app!!');
+    expect(compiled.querySelector('h3').textContent).toContain('It\'s Snacky Time');
   }));
 });
