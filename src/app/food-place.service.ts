@@ -17,11 +17,8 @@ export class FoodPlaceService {
 	initializationFinished: boolean = false;
   	myLat: number;
   	myLng: number;
-
+  	placeLookupTable:object = {};
     googlePlacesService:any;
-
-
-// Each marker is labeled with a single alphabetical character.
     markerLabels:string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     labelIndex:number = 0;
 
@@ -37,6 +34,25 @@ export class FoodPlaceService {
 	    this.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 	}
 
+	handleMarkerClick(event:any){
+		console.log('event : ' + JSON.stringify(event,null,4));
+		let key = this.makeKeyFromLatLng(event.latLng.lat(),event.latLng.lng());
+
+		let clickedPlace = this.placeLookupTable[key];
+
+		console.log("clicked Place : " + clickedPlace);
+	}
+
+	makeKeyFromLatLng(markerLat:number, markerLng:number){
+		let key = markerLat.toString() + markerLng.toString();
+		return key;
+	}
+
+	addPlaceToTable(place:any, markerLat:number, markerLng:number){
+		let newKey = this.makeKeyFromLatLng(markerLat, markerLng);
+		this.placeLookupTable[newKey] = place;
+	}
+
 	createMarker(place:any){
 
 		let markerLat = place.geometry.location.lat();
@@ -47,6 +63,16 @@ export class FoodPlaceService {
 	        label: this.markerLabels[this.labelIndex++ % this.markerLabels.length],
 	        map: this.map
 	      });
+
+		marker["place"] = place;
+
+		this.addPlaceToTable(place, markerLat, markerLng);
+
+		// this.attachClickEvent(marker, this.handleMarkerClick);
+        google.maps.event.addListener(marker, "click", (event)=>{
+        	this.handleMarkerClick(event);
+        });
+
 	}
 
 	getFoodPlaces(){
