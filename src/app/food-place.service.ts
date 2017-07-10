@@ -21,6 +21,8 @@ export class FoodPlaceService {
     googlePlacesService:any;
     markerLabels:string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     labelIndex:number = 0;
+    placeIsSelected: boolean = false;
+
 
   	constructor() {
 	    google.maps.event.addDomListener(window, "load", this.init.bind(this));
@@ -35,6 +37,8 @@ export class FoodPlaceService {
 	}
 
 	handleMarkerClick(event:any){
+		this.placeIsSelected = true;
+
 		console.log('event : ' + JSON.stringify(event,null,4));
 		let key = this.makeKeyFromLatLng(event.latLng.lat(),event.latLng.lng());
 
