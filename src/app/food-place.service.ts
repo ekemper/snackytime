@@ -89,9 +89,22 @@ export class FoodPlaceService {
 		navigator.geolocation.getCurrentPosition(successCallback.bind(this), errorCallback, options);
 	}
 
+	showUserGeoMarker(){
+		var marker = new google.maps.Marker({
+          position: {lat: this.myLat, lng: this.myLng},
+          icon: {
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            scale: 6
+          },
+          draggable: false,
+          map: this.map
+        });
+	}
+
 	init(){
         this.getCurrentGeolocation(()=>{
 			this.initializeMap();
+			this.showUserGeoMarker();
 			this.googlePlacesService = new google.maps.places.PlacesService(this.map);
 			this.getFoodPlaces();
 			this.initializationFinished = true;
