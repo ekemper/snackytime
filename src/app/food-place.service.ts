@@ -20,6 +20,11 @@ export class FoodPlaceService {
 
     googlePlacesService:any;
 
+
+// Each marker is labeled with a single alphabetical character.
+    markerLabels:string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    labelIndex:number = 0;
+
   	constructor() {
 	    google.maps.event.addDomListener(window, "load", this.init.bind(this));
   	}
@@ -39,6 +44,7 @@ export class FoodPlaceService {
 
 		var marker = new google.maps.Marker({
 	        position: { lat: markerLat, lng: markerLng },
+	        label: this.markerLabels[this.labelIndex++ % this.markerLabels.length],
 	        map: this.map
 	      });
 	}
