@@ -11,17 +11,21 @@ import { FoodPlaceService } from '../food-place.service';
 export class PlaceListComponent implements OnInit {
 
   initFinished:boolean = false;
+  places:object;
+  placesKeys:Array<any>;
 
   constructor(private foodPlaceService: FoodPlaceService, private ngZone: NgZone) {}
 
   ngOnInit() {
   	this.foodPlaceService.initSubject.subscribe((value) => {
 
-			this.ngZone.run(() => {
-				console.log("Subscription got", value);
-			    this.initFinished = value;   
-			    console.log('in mapview - this.initFinished : ' + this.initFinished);
-			});                                     
+		this.ngZone.run(() => {
+			console.log("Subscription got", value);
+		    this.initFinished = value;   
+
+		    this.places = this.foodPlaceService.placeLookupTable;
+		    this.placesKeys = Object.keys(this.places);
+		});                                     
 	});
   }
 

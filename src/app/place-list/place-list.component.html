@@ -2,12 +2,8 @@
 
 <ul class="list-group" *ngIf="initFinished">
 
-
-  <li class="list-group-item"> 
-  	  
+  <li class="list-group-item" *ngFor="let key of placesKeys;">
+    {{places[key].name}}
   </li>
   
-
-
-
 </ul>
