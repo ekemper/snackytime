@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 
 // import { FoodPlace } from './food-place';
 import { Observable } from 'rxjs/Rx';
-
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+ 
 // Import RxJs required methods
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+//import 'rxjs/add/operator/map';
+//import 'rxjs/add/operator/catch';
 
 declare var google;
 
@@ -13,8 +14,6 @@ declare var google;
 @Injectable()
 export class FoodPlaceService {
 	map:any;
-	//infowindow:any = new google.maps.InfoWindow();
-	initializationFinished: boolean = false;
   	myLat: number;
   	myLng: number;
   	placeLookupTable:object = {};
@@ -22,11 +21,35 @@ export class FoodPlaceService {
     markerLabels:string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     labelIndex:number = 0;
     selectedPlace: any;
+    placeKeys: any;
 
+    initFinished:boolean = false;
+
+	initSubject:BehaviorSubject<any> = new BehaviorSubject(false); 
 
   	constructor() {
 	    google.maps.event.addDomListener(window, "load", this.init.bind(this));
+
+		this.initSubject.subscribe((value) => {
+		  console.log("Subscription got", value);
+		  this.initFinished = value;                                      
+		});
+
   	}
+
+	init(){
+        this.getCurrentGeolocation(()=>{
+			this.initializeMap();
+			this.showUserGeoMarker();
+			this.googlePlacesService = new google.maps.places.PlacesService(this.map);
+			this.getFoodPlaces(()=>{
+				this.getPlaceKeys();
+	  	        console.log('placeKeys : ' + this.placeKeys);
+				this.initSubject.next(true);				
+			});
+
+	    });
+	}
 
   	getPlaceDetails(placeId){
 		var request = {placeId: 'placeId'};
@@ -87,7 +110,7 @@ export class FoodPlaceService {
 
 	}
 
-	getFoodPlaces(){
+	getFoodPlaces(callback){
 
         this.googlePlacesService.nearbySearch({
           location: {lat: this.myLat, lng: this.myLng},
@@ -101,6 +124,8 @@ export class FoodPlaceService {
 			    this.createMarker(results[i]);
 			  }
 
+			  callback()
+			  //this.handleFoodPlacesCallback();
 			  //console.log('places results : ' + JSON.stringify(results,null,4));
 
 			}else{
@@ -145,13 +170,7 @@ export class FoodPlaceService {
         });
 	}
 
-	init(){
-        this.getCurrentGeolocation(()=>{
-			this.initializeMap();
-			this.showUserGeoMarker();
-			this.googlePlacesService = new google.maps.places.PlacesService(this.map);
-			this.getFoodPlaces();
-			this.initializationFinished = true;
-	    });
+	getPlaceKeys(){
+		this.placeKeys = Object.keys(this.placeLookupTable);
 	}
 }

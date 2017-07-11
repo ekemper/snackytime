@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { FoodPlaceService } from '../food-place.service';	
 
 
@@ -11,9 +11,21 @@ import { FoodPlaceService } from '../food-place.service';
 
 export class MapviewComponent implements OnInit {
 	
-	constructor(private foodPlaceService: FoodPlaceService) { } 
+	initFinished:boolean = false;
+
+	constructor(private foodPlaceService: FoodPlaceService, private ngZone: NgZone) { } 
 
 	ngOnInit(){
-	  
+	    this.foodPlaceService.initSubject.subscribe((value) => {
+
+			this.ngZone.run(() => {
+				console.log("Subscription got", value);
+			    this.initFinished = value;   
+			    console.log('in mapview - this.initFinished : ' + this.initFinished);
+			});
+
+
+			                                   
+		});
 	}
 }

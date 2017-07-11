@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { FoodPlaceService } from '../food-place.service';
+// import { Observable } from 'rxjs/Rx';
 
 @Component({
   selector: 'app-place-list',
@@ -8,15 +9,20 @@ import { FoodPlaceService } from '../food-place.service';
   providers: []
 })
 export class PlaceListComponent implements OnInit {
-  placeKeys: Array<any>;
 
-  constructor(private foodPlaceService: FoodPlaceService) { 
-  	this.placeKeys = Object.keys(this.foodPlaceService.placeLookupTable);
-  	console.log('placeKeys : ' + this.placeKeys);
-  }
+  initFinished:boolean = false;
+
+  constructor(private foodPlaceService: FoodPlaceService, private ngZone: NgZone) {}
 
   ngOnInit() {
+  	this.foodPlaceService.initSubject.subscribe((value) => {
 
+			this.ngZone.run(() => {
+				console.log("Subscription got", value);
+			    this.initFinished = value;   
+			    console.log('in mapview - this.initFinished : ' + this.initFinished);
+			});                                     
+	});
   }
 
 }

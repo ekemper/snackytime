@@ -1,11 +1,10 @@
 <pre>{{placeKeys}}</pre>
 
-<ul class="list-group">
+<ul class="list-group" *ngIf="initFinished">
 
 
-  <li class="list-group-item" 
-  	  *ngFor="let key of placekeys">
-  	  {{key}}
+  <li class="list-group-item"> 
+  	  
   </li>
   
 
