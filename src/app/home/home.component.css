@@ -1,0 +1,13 @@
+.jumbotron {
+	margin-top:50px;
+	margin-bottom: 0px;
+	padding-bottom: 15px;
+	max-height: 25vh;
+	background-color:white;
+}
+
+@media screen and (max-width: 480px) {
+    .main-header-text {
+        font-size:38px;
+    }
+}

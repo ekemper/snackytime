@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { FoodPlace } from './food-place';
+// import { FoodPlace } from './food-place';
 import { Observable } from 'rxjs/Rx';
 
 // Import RxJs required methods
@@ -21,11 +21,22 @@ export class FoodPlaceService {
     googlePlacesService:any;
     markerLabels:string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     labelIndex:number = 0;
-    placeIsSelected: boolean = false;
+    selectedPlace: any;
 
 
   	constructor() {
 	    google.maps.event.addDomListener(window, "load", this.init.bind(this));
+  	}
+
+  	getPlaceDetails(placeId){
+		var request = {placeId: 'placeId'};
+		this.googlePlacesService.getDetails(request, (place, status)=>{
+			if (status == google.maps.places.PlacesServiceStatus.OK) {
+				return place;
+			}else{
+				console.warn('error getting place details...');
+			}
+		});
   	}
 
 	initializeMap() {
@@ -37,14 +48,9 @@ export class FoodPlaceService {
 	}
 
 	handleMarkerClick(event:any){
-		this.placeIsSelected = true;
-
 		console.log('event : ' + JSON.stringify(event,null,4));
 		let key = this.makeKeyFromLatLng(event.latLng.lat(),event.latLng.lng());
-
-		let clickedPlace = this.placeLookupTable[key];
-
-		console.log("clicked Place : " + clickedPlace);
+		this.selectedPlace = this.placeLookupTable[key];
 	}
 
 	makeKeyFromLatLng(markerLat:number, markerLng:number){
@@ -68,11 +74,13 @@ export class FoodPlaceService {
 	        map: this.map
 	      });
 
-		marker["place"] = place;
+		// let newPlace = new FoodPlace({
+		// 	lat: place.geometry.location.lat(),
+		// 	lng: place.geometry.location.lat()
+		// });
 
 		this.addPlaceToTable(place, markerLat, markerLng);
 
-		// this.attachClickEvent(marker, this.handleMarkerClick);
         google.maps.event.addListener(marker, "click", (event)=>{
         	this.handleMarkerClick(event);
         });
@@ -96,9 +104,9 @@ export class FoodPlaceService {
 			  //console.log('places results : ' + JSON.stringify(results,null,4));
 
 			}else{
-				console.warn("places service call not ok");
+				console.warn("error with places service call...");
+				console.warn(google.maps.places.PlacesServiceStatus);
 			}
-
         });
 	}
 

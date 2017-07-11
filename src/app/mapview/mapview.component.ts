@@ -6,7 +6,7 @@ import { FoodPlaceService } from '../food-place.service';
   selector: 'app-mapview',
   templateUrl: './mapview.component.html',
   styleUrls: ['./mapview.component.css'],
-  providers: [FoodPlaceService]
+  providers: []
 })
 
 export class MapviewComponent implements OnInit {
