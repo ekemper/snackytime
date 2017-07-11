@@ -18,11 +18,8 @@ export class PlaceListComponent implements OnInit {
 
   ngOnInit() {
   	this.foodPlaceService.initSubject.subscribe((value) => {
-
 		this.ngZone.run(() => {
-			console.log("Subscription got", value);
 		    this.initFinished = value;   
-
 		    this.places = this.foodPlaceService.placeLookupTable;
 		    this.placesKeys = Object.keys(this.places);
 		});                                     

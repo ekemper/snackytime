@@ -17,15 +17,9 @@ export class MapviewComponent implements OnInit {
 
 	ngOnInit(){
 	    this.foodPlaceService.initSubject.subscribe((value) => {
-
 			this.ngZone.run(() => {
-				console.log("Subscription got", value);
 			    this.initFinished = value;   
-			    console.log('in mapview - this.initFinished : ' + this.initFinished);
-			});
-
-
-			                                   
+			});	                                   
 		});
 	}
 }

@@ -1,15 +1,9 @@
 import { Injectable } from '@angular/core';
 
-// import { FoodPlace } from './food-place';
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
  
-// Import RxJs required methods
-//import 'rxjs/add/operator/map';
-//import 'rxjs/add/operator/catch';
-
 declare var google;
-
 
 @Injectable()
 export class FoodPlaceService {
@@ -24,7 +18,6 @@ export class FoodPlaceService {
     placeKeys: any;
 
     initFinished:boolean = false;
-
 	initSubject:BehaviorSubject<any> = new BehaviorSubject(false); 
 
   	constructor() {
@@ -34,7 +27,6 @@ export class FoodPlaceService {
 		  console.log("Subscription got", value);
 		  this.initFinished = value;                                      
 		});
-
   	}
 
 	init(){
@@ -47,7 +39,6 @@ export class FoodPlaceService {
 	  	        console.log('placeKeys : ' + this.placeKeys);
 				this.initSubject.next(true);				
 			});
-
 	    });
 	}
 
@@ -97,17 +88,11 @@ export class FoodPlaceService {
 	        map: this.map
 	      });
 
-		// let newPlace = new FoodPlace({
-		// 	lat: place.geometry.location.lat(),
-		// 	lng: place.geometry.location.lat()
-		// });
-
 		this.addPlaceToTable(place, markerLat, markerLng);
 
         google.maps.event.addListener(marker, "click", (event)=>{
         	this.handleMarkerClick(event);
         });
-
 	}
 
 	getFoodPlaces(callback){
@@ -125,9 +110,7 @@ export class FoodPlaceService {
 			  }
 
 			  callback()
-			  //this.handleFoodPlacesCallback();
-			  //console.log('places results : ' + JSON.stringify(results,null,4));
-
+	
 			}else{
 				console.warn("error with places service call...");
 				console.warn(google.maps.places.PlacesServiceStatus);
