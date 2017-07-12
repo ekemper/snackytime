@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { FoodPlaceService } from '../food-place.service';
-// import { Observable } from 'rxjs/Rx';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-place-list',
@@ -14,7 +14,9 @@ export class PlaceListComponent implements OnInit {
   places:object;
   placesKeys:Array<any>;
 
-  constructor(private foodPlaceService: FoodPlaceService, private ngZone: NgZone) {}
+  constructor(private foodPlaceService: FoodPlaceService, 
+  	          private ngZone: NgZone,
+  	          private router: Router) {}
 
   ngOnInit() {
   	this.foodPlaceService.initSubject.subscribe((value) => {
@@ -24,6 +26,13 @@ export class PlaceListComponent implements OnInit {
 		    this.placesKeys = Object.keys(this.places);
 		});                                     
 	});
+  }
+
+
+  goToDetail(place:object){
+
+  	console.log('place :  '+ place);
+  	this.router.navigate(['/place-detail/'+place['place_id']]);
   }
 
 }

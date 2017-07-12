@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {Router} from "@angular/router";
 
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -14,13 +15,13 @@ export class FoodPlaceService {
     googlePlacesService:any;
     markerLabels:string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     labelIndex:number = 0;
-    selectedPlace: any;
     placeKeys: any;
+    placeDetailsById:object = {};
 
     initFinished:boolean = false;
 	initSubject:BehaviorSubject<any> = new BehaviorSubject(false); 
 
-  	constructor() {
+  	constructor(private router: Router) {
 	    google.maps.event.addDomListener(window, "load", this.init.bind(this));
 
 		this.initSubject.subscribe((value) => {
@@ -35,18 +36,22 @@ export class FoodPlaceService {
 			this.showUserGeoMarker();
 			this.googlePlacesService = new google.maps.places.PlacesService(this.map);
 			this.getFoodPlaces(()=>{
-				this.getPlaceKeys();
+				this.placeKeys = Object.keys(this.placeLookupTable);
 	  	        console.log('placeKeys : ' + this.placeKeys);
-				this.initSubject.next(true);				
+
+				this.initSubject.next(true);	
 			});
 	    });
 	}
 
-  	getPlaceDetails(placeId){
-		var request = {placeId: 'placeId'};
+  	getPlaceDetails(placeId:string, callback){
+		var request = {placeId: placeId};
 		this.googlePlacesService.getDetails(request, (place, status)=>{
 			if (status == google.maps.places.PlacesServiceStatus.OK) {
-				return place;
+				
+				this.placeDetailsById[place.place_id] = place;
+
+				callback(place);
 			}else{
 				console.warn('error getting place details...');
 			}
@@ -55,7 +60,7 @@ export class FoodPlaceService {
 
 	initializeMap() {
 	    var myOptions = {
-	        zoom: 16,
+	        zoom: 14,
 	        center: {lat: this.myLat, lng: this.myLng},
 	    };
 	    this.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
@@ -64,7 +69,8 @@ export class FoodPlaceService {
 	handleMarkerClick(event:any){
 		console.log('event : ' + JSON.stringify(event,null,4));
 		let key = this.makeKeyFromLatLng(event.latLng.lat(),event.latLng.lng());
-		this.selectedPlace = this.placeLookupTable[key];
+		let selectedPlace = this.placeLookupTable[key];
+		this.router.navigate(['/place-detail/'+selectedPlace['place_id']]);
 	}
 
 	makeKeyFromLatLng(markerLat:number, markerLng:number){
@@ -81,12 +87,15 @@ export class FoodPlaceService {
 
 		let markerLat = place.geometry.location.lat();
 		let markerLng = place.geometry.location.lng();
+		let markerLabel = this.markerLabels[this.labelIndex++ % this.markerLabels.length];
 
 		var marker = new google.maps.Marker({
 	        position: { lat: markerLat, lng: markerLng },
-	        label: this.markerLabels[this.labelIndex++ % this.markerLabels.length],
+	        label: markerLabel,
 	        map: this.map
 	      });
+
+		place['markerLabel'] = markerLabel;
 
 		this.addPlaceToTable(place, markerLat, markerLng);
 
@@ -105,11 +114,29 @@ export class FoodPlaceService {
         }, (results, status)=>{
 
         	if (status === google.maps.places.PlacesServiceStatus.OK) {
-			  for (var i = 0; i < results.length; i++) {
-			    this.createMarker(results[i]);
-			  }
 
-			  callback()
+        		let placeCount = results.length;
+        		let ithPlace;
+
+				for (var i = 0; i < placeCount; i++) {
+
+					ithPlace = results[i]
+
+					this.createMarker(ithPlace);
+
+					this.getPlaceDetails(ithPlace.place_id, (placeDetails)=>{
+
+				    	let placeDetailsCount = Object.keys(this.placeDetailsById).length;
+
+				    	let allDetailsRequestsCameBack = (placeDetailsCount === placeCount);
+
+				    	if(allDetailsRequestsCameBack){
+				    		callback();
+				    	}
+				    });
+				}
+
+			  //callback()
 	
 			}else{
 				console.warn("error with places service call...");
@@ -151,9 +178,5 @@ export class FoodPlaceService {
           draggable: false,
           map: this.map
         });
-	}
-
-	getPlaceKeys(){
-		this.placeKeys = Object.keys(this.placeLookupTable);
 	}
 }

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-// import { FoodPlaceService } from '../food-place.service';	
+import { FoodPlaceService } from '../food-place.service';	
 
 @Component({
   selector: 'app-place-detail',
   templateUrl: './place-detail.component.html',
   styleUrls: ['./place-detail.component.css'],
-  providers:[/*FoodPlaceService*/]
+  providers:[]
 })
 export class PlaceDetailComponent implements OnInit {
 
@@ -14,13 +14,14 @@ export class PlaceDetailComponent implements OnInit {
   placeId: number;
   private sub: any;
   
-  constructor(/*private foodPlaceService: FoodPlaceService,*/ private route: ActivatedRoute) { }
+  constructor(private foodPlaceService: FoodPlaceService, private route: ActivatedRoute) { }
 
   ngOnInit() {
 
     this.sub = this.route.params.subscribe(params => {
-        this.placeId = +params['id']; // (+) converts string 'id' to a number
-  	    // this.place = this.foodPlaceService.getPlaceDetails(this.placeId);
+        this.placeId = params['id']; 
+        this.place = this.foodPlaceService.placeDetailsById[this.placeId];
+        console.log('placedetail : ' + JSON.stringify(this.place,null,4));
     });
   
   }

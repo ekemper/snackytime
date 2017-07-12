@@ -1,5 +1,4 @@
 .jumbotron {
-	margin-top:50px;
 	margin-bottom: 0px;
 	padding-bottom: 15px;
 	max-height: 25vh;
@@ -9,5 +8,12 @@
 @media screen and (max-width: 480px) {
     .main-header-text {
         font-size:38px;
+    }
+}
+
+@media screen and (min-width: 480px) {
+    .responsive-container {
+        max-width: 60vw;
+        margin-left:20vw;
     }
 }

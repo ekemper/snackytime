@@ -1,0 +1,6 @@
+@media screen and (min-width: 480px) {
+    .responsive-container {
+        max-width: 60vw;
+        margin-left:20vw;
+    }
+}
