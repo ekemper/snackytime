@@ -22,15 +22,18 @@ export class FoodPlaceService {
 	initSubject:BehaviorSubject<any> = new BehaviorSubject(false); 
 
   	constructor(private router: Router) {
-	    google.maps.event.addDomListener(window, "load", this.init.bind(this));
+	    //google.maps.event.addDomListener(window, "load", this.init.bind(this));
 
 		this.initSubject.subscribe((value) => {
 		  console.log("Subscription got", value);
 		  this.initFinished = value;                                      
 		});
+
+		this.init();
   	}
 
 	init(){
+		console.log('called foodplaceService init()...');
         this.getCurrentGeolocation(()=>{
 			this.initializeMap();
 			this.showUserGeoMarker();
@@ -108,8 +111,8 @@ export class FoodPlaceService {
 
         this.googlePlacesService.nearbySearch({
           location: {lat: this.myLat, lng: this.myLng},
-          radius: 500,
-          type: ['food']
+          radius: 1000,
+          type: ['restaurant']
 
         }, (results, status)=>{
 

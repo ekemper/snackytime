@@ -7,12 +7,27 @@
 		<i class="fa fa-chevron-left" aria-hidden="true"></i>
 		Back to Map
 	</button>
-	<div class="card">
-	  <img class="card-img-top" src="..." alt="Card image cap">
+
+	<div *ngIf="!initFinished">
+		<br>
+		<br>
+		<div id="loading-map-alert" 
+			 class="alert alert-success" 
+			 role="alert"> 
+		  <h4>...<em>Loading Details</em></h4>
+		</div>
+	</div>
+
+	<div class="card" *ngIf="initFinished">
+	  <img class="card-img-top" src="{{photoSrc}}" alt="Card image cap">
 	  <div class="card-block">
-	    <h4 class="card-title">Card title</h4>
-	    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+	    <h4 class="card-title"><a href="{{place.website}}">{{place.name}}</a></h4>
+	    <p class="card-text" *ngIf="place.opening_hours.open_now">Open Now</p>
+	    <p class="card-text" *ngIf="!place.opening_hours.open_now">Closed Now</p>
+
+	    <p class="card-text">Average Rating: {{place.rating}}</p>
 	    <a href="#" class="btn btn-primary">Go somewhere</a>
 	  </div>
 	</div>
+
 </div>
