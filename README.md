@@ -1,5 +1,23 @@
 # Snackytime
 
+A simple map based application for finding nearby food.
+
+## Architecture
+
+A simple Angular application that uses Google Maps and Places apis. The application is totally api based on the back-end. 
+
+## Deployment Plan
+
+Heroku. As documented here : 
+
+https://medium.com/@ryanchenkie_40935/angular-cli-deployment-host-your-angular-2-app-on-heroku-3f266f13f352
+
+
+
+
+# Original Angular-Cli Generated Documentation
+
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.1.2.
 
 ## Development server
