@@ -11,7 +11,7 @@ import { FoodPlaceService } from '../food-place.service';
 export class PlaceDetailComponent implements OnInit {
 
   place:any;	
-  placeId: number;
+  placeId: string;
   private sub: any;
   photoSrc:string;
   initFinished:boolean = false;
@@ -31,19 +31,24 @@ export class PlaceDetailComponent implements OnInit {
 
     this.sub = this.route.params.subscribe(params => {
         
-        this.foodPlaceService.initSubject.subscribe((value) => {
-          this.ngZone.run(() => {
+        // this.foodPlaceService.initSubject.subscribe((value) => {
+        //this.ngZone.run(() => {
 
 
-              this.placeId = params['id']; 
-              this.place = this.foodPlaceService.placeDetailsById[this.placeId];
-              console.log('placedetail : ' + JSON.stringify(this.place,null,4));
+              this.placeId = params['id'].toString(); 
+              this.foodPlaceService.getPlaceDetails(this.placeId, (place)=>{
 
-              this.photoSrc = /*this.place.photos[0].getUrl() ||*/ this.place.icon;
-              this.initFinished = value;   
+                  this.place = place;
 
-          });                                     
-        });
+                  console.log('placedetail : ' + JSON.stringify(this.place,null,4));
+
+                  this.photoSrc = /*this.place.photos[0].getUrl() ||*/ this.place.icon;
+                  //this.initFinished = true;   
+              });
+              
+
+        //});                                     
+        // });
 
 
 

@@ -8,7 +8,8 @@
 		Back to Map
 	</button>
 
-	<div *ngIf="!initFinished">
+	<!-- <div *ngIf="!place"> -->
+	<div>
 		<br>
 		<br>
 		<div id="loading-map-alert" 
@@ -18,7 +19,8 @@
 		</div>
 	</div>
 
-	<div class="card" *ngIf="initFinished">
+	<!-- <div class="card" *ngIf="place"> -->
+	<div class="card">
 	  <img class="card-img-top" src="{{photoSrc}}" alt="Card image cap">
 	  <div class="card-block">
 	    <h4 class="card-title"><a href="{{place.website}}">{{place.name}}</a></h4>
@@ -26,7 +28,7 @@
 	    <p class="card-text" *ngIf="!place.opening_hours.open_now">Closed Now</p>
 
 	    <p class="card-text">Average Rating: {{place.rating}}</p>
-	    <a href="#" class="btn btn-primary">Go somewhere</a>
+	    <a href="#" class="btn btn-primary">Leave A Review</a>
 	  </div>
 	</div>
 

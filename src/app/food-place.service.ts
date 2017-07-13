@@ -25,7 +25,7 @@ export class FoodPlaceService {
 	    //google.maps.event.addDomListener(window, "load", this.init.bind(this));
 
 		this.initSubject.subscribe((value) => {
-		  console.log("Subscription got", value);
+		  //console.log("Subscription got", value);
 		  this.initFinished = value;                                      
 		});
 
@@ -40,7 +40,7 @@ export class FoodPlaceService {
 			this.googlePlacesService = new google.maps.places.PlacesService(this.map);
 			this.getFoodPlaces(()=>{
 				this.placeKeys = Object.keys(this.placeLookupTable);
-	  	        console.log('placeKeys : ' + this.placeKeys);
+	  	        //console.log('placeKeys : ' + this.placeKeys);
 
 				this.initSubject.next(true);	
 			});
@@ -127,19 +127,19 @@ export class FoodPlaceService {
 
 					this.createMarker(ithPlace);
 
-					this.getPlaceDetails(ithPlace.place_id, (placeDetails)=>{
+					// this.getPlaceDetails(ithPlace.place_id, (placeDetails)=>{
 
-				    	let placeDetailsCount = Object.keys(this.placeDetailsById).length;
+				 //    	let placeDetailsCount = Object.keys(this.placeDetailsById).length;
 
-				    	let allDetailsRequestsCameBack = (placeDetailsCount === placeCount);
+				 //    	let allDetailsRequestsCameBack = (placeDetailsCount === placeCount);
 
-				    	if(allDetailsRequestsCameBack){
-				    		callback();
-				    	}
-				    });
+				 //    	if(allDetailsRequestsCameBack){
+				 //    		callback();
+				 //    	}
+				 //    });
 				}
 
-			  //callback()
+			  callback()
 	
 			}else{
 				console.warn("error with places service call...");
